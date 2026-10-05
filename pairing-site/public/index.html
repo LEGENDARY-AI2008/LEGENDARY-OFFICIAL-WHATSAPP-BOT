@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LËGĒNDÃRY BØT</title>
+<style>
+  :root{
+    --bg:#070812; --panel:#10132a; --panel-line:#232749;
+    --text:#eef0ff; --muted:#8d93c4; --accent:#7c5cff; --accent-soft:#7c5cff22;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0; padding:0; background:var(--bg); color:var(--text); font-family:'Segoe UI',sans-serif; overflow-x:hidden;}
+
+  /* ---- floating background orbs ---- */
+  .orb{position:fixed; border-radius:50%; filter:blur(60px); opacity:.35; z-index:0; pointer-events:none;}
+  .orb1{width:280px; height:280px; background:#7c5cff; top:-60px; left:-60px; animation:float1 14s ease-in-out infinite;}
+  .orb2{width:220px; height:220px; background:#ff5ca8; top:40%; right:-80px; animation:float2 18s ease-in-out infinite;}
+  .orb3{width:200px; height:200px; background:#2ecc9b; bottom:-60px; left:30%; animation:float3 16s ease-in-out infinite;}
+  @keyframes float1{0%,100%{transform:translate(0,0);} 50%{transform:translate(40px,60px);}}
+  @keyframes float2{0%,100%{transform:translate(0,0);} 50%{transform:translate(-50px,40px);}}
+  @keyframes float3{0%,100%{transform:translate(0,0);} 50%{transform:translate(30px,-50px);}}
+
+  header{position:sticky; top:0; z-index:10; backdrop-filter:blur(10px); background:#070812cc; border-bottom:1px solid var(--panel-line);
+    display:flex; align-items:center; justify-content:space-between; padding:14px 20px;}
+  header .brand{font-weight:700; font-size:1.05rem;}
+  nav{display:flex; gap:18px;}
+  nav a{color:var(--muted); text-decoration:none; font-size:.85rem; cursor:pointer;}
+  nav a:hover{color:var(--text);}
+
+  section{position:relative; z-index:1; max-width:720px; margin:0 auto; padding:50px 20px;}
+  .hero{text-align:center; padding-top:60px;}
+  .hero h1{font-size:2rem; margin:0 0 10px;}
+  .hero p{color:var(--muted); max-width:460px; margin:0 auto 10px;}
+
+  .card{
+    width:100%; max-width:420px; margin:30px auto 0; background:var(--panel); border:1px solid var(--panel-line);
+    border-radius:18px; padding:28px 24px; text-align:center;
+  }
+  .tabs{display:flex; border:1px solid var(--panel-line); border-radius:12px; padding:4px; margin-bottom:20px;}
+  .tab-btn{flex:1; padding:10px; border:none; border-radius:9px; background:none; color:var(--muted); font-size:.9rem; cursor:pointer;}
+  .tab-btn.active{background:var(--accent); color:#fff;}
+  .pane{display:none;} .pane.active{display:block;}
+  .field{display:flex; align-items:center; border:1px solid var(--panel-line); border-radius:10px; padding:10px 14px; margin-bottom:14px;}
+  .field input{flex:1; background:none; border:none; color:var(--text); font-size:1rem; outline:none;}
+  .prefix{color:var(--muted); margin-right:6px;}
+  button.primary{
+    width:100%; padding:13px; border:none; border-radius:10px; background:var(--accent);
+    color:#fff; font-size:.95rem; font-weight:600; cursor:pointer;
+  }
+  button.primary:disabled{opacity:.6; cursor:default;}
+  .error{color:#ff6b6b; font-size:.82rem; margin-top:10px; display:none;}
+  .code-box, .qr-box{margin-top:18px; display:none; text-align:center;}
+  .code-box .code-value{font-size:1.8rem; letter-spacing:3px; font-weight:700; margin:10px 0;}
+  .qr-box img{width:220px; height:220px; border-radius:10px; background:#fff; padding:10px;}
+  .status-line{display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px; font-size:.82rem; color:var(--muted);}
+  .dot{width:8px; height:8px; border-radius:50%; background:#ffb020;}
+  .dot.live{background:#2ecc71;}
+  .session-box{
+    display:none; margin-top:18px; text-align:left; border:1px solid var(--panel-line);
+    border-radius:12px; padding:16px; background:#0A0C1E;
+  }
+  .session-box textarea{width:100%; background:none; border:none; color:var(--accent); font-family:monospace; font-size:.78rem; resize:none; outline:none;}
+  .session-box .hint{color:var(--muted); font-size:.78rem; margin-top:8px;}
+  .copy-btn{margin-top:10px; width:100%; padding:10px; border-radius:8px; border:1px solid var(--panel-line); background:none; color:var(--text); cursor:pointer;}
+
+  h2.section-title{font-size:1.4rem; text-align:center; margin-bottom:6px;}
+  p.section-sub{color:var(--muted); text-align:center; font-size:.88rem; margin:0 0 30px;}
+
+  .features-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .feature-card{background:var(--panel); border:1px solid var(--panel-line); border-radius:14px; padding:16px;}
+  .feature-card .count{font-size:1.6rem; font-weight:700; color:var(--accent);}
+  .feature-card .label{font-size:.85rem; color:var(--muted); margin-top:4px;}
+  .feature-card .list{margin-top:10px; font-size:.78rem; color:var(--text); line-height:1.6; word-break:break-word;}
+
+  .accordion-item{border:1px solid var(--panel-line); border-radius:14px; margin-bottom:12px; overflow:hidden; background:var(--panel);}
+  .accordion-head{display:flex; align-items:center; justify-content:space-between; padding:16px 18px; cursor:pointer;}
+  .accordion-head .title{display:flex; align-items:center; gap:12px; font-weight:600;}
+  .accordion-head .chev{color:var(--muted); transition:transform .2s ease;}
+  .accordion-item.open .chev{transform:rotate(180deg);}
+  .accordion-body{display:none; padding:0 18px 18px;}
+  .accordion-item.open .accordion-body{display:block;}
+  .accordion-body ol{color:var(--muted); font-size:.85rem; line-height:1.7; padding-left:20px; margin:0 0 14px;}
+  .accordion-body code.inline{background:#0A0C1E; padding:2px 6px; border-radius:4px; color:var(--accent); font-size:.8rem;}
+
+  .code-block{position:relative; background:#0A0C1E; border:1px solid var(--panel-line); border-radius:10px; padding:14px; max-height:260px; overflow:auto;}
+  .code-block pre{margin:0; font-family:monospace; font-size:.72rem; color:#cfd3ff; white-space:pre-wrap; word-break:break-word;}
+  .code-copy-btn{margin-top:10px; width:100%; padding:10px; border-radius:8px; border:1px solid var(--panel-line); background:var(--accent); color:#fff; font-weight:600; cursor:pointer;}
+
+  footer{position:relative; z-index:1; text-align:center; color:var(--muted); font-size:.78rem; padding:30px 20px 50px;}
+</style>
+</head>
+<body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <header>
+    <div class="brand">LËGĒNDÃRY BØT</div>
+    <nav>
+      <a data-scroll="session">Session</a>
+      <a data-scroll="features">Features</a>
+      <a data-scroll="deploy">Deploy</a>
+    </nav>
+  </header>
+
+  <section id="session" class="hero">
+    <h1>Pair your WhatsApp bot</h1>
+    <p>Get your SESSION_ID in seconds, then deploy it anywhere using the Deploy section below.</p>
+
+    <div class="card">
+      <div class="tabs">
+        <button class="tab-btn active" id="numberTabBtn" type="button">Number</button>
+        <button class="tab-btn" id="qrTabBtn" type="button">QR Code</button>
+      </div>
+
+      <div class="pane active" id="numberPane">
+        <div class="field">
+          <span class="prefix">+</span>
+          <input id="numberInput" type="tel" inputmode="numeric" placeholder="234xxxxxxxxxx">
+        </div>
+        <button class="primary" id="pairBtn">Get pairing code</button>
+        <p class="error" id="errorMsg"></p>
+
+        <div class="code-box" id="codeBox">
+          <div class="hint">Enter this in WhatsApp → Linked Devices → Link with phone number instead</div>
+          <div class="code-value" id="codeValue"></div>
+          <button class="copy-btn" id="copyCodeBtn" type="button">Copy code</button>
+          <div class="status-line"><span class="dot" id="statusDot"></span><span id="statusText">waiting for confirmation...</span></div>
+        </div>
+      </div>
+
+      <div class="pane" id="qrPane">
+        <button class="primary" id="qrBtn">Get QR code</button>
+        <p class="error" id="qrErrorMsg"></p>
+        <div class="qr-box" id="qrBox">
+          <img id="qrImage" alt="QR code">
+          <div class="status-line"><span class="dot" id="qrStatusDot"></span><span id="qrStatusText">waiting for scan...</span></div>
+        </div>
+      </div>
+
+      <div class="session-box" id="sessionBox">
+        <div class="hint">Your SESSION_ID — paste this into the loader below:</div>
+        <textarea id="sessionValue" rows="2" readonly></textarea>
+        <button class="copy-btn" id="copyBtn">Copy SESSION_ID</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <h2 class="section-title">What it can do</h2>
+    <p class="section-sub">20 commands across 5 categories — growing every week.</p>
+    <div class="features-grid">
+      <div class="feature-card"><div class="count">5</div><div class="label">General</div><div class="list">menu, ping, alive, owner, jid</div></div>
+      <div class="feature-card"><div class="count">4</div><div class="label">Media</div><div class="list">sticker, toimg, take, vv</div></div>
+      <div class="feature-card"><div class="count">6</div><div class="label">Group</div><div class="list">kick, add, promote, demote, grouplink, antilink</div></div>
+      <div class="feature-card"><div class="count">3</div><div class="label">Fun</div><div class="list">joke, quote, 8ball</div></div>
+      <div class="feature-card"><div class="count">2</div><div class="label">Owner-only</div><div class="list">broadcast, mode</div></div>
+      <div class="feature-card"><div class="count">∞</div><div class="label">More soon</div><div class="list">new commands added regularly</div></div>
+    </div>
+  </section>
+
+  <section id="deploy">
+    <h2 class="section-title">Deploy Your Bot</h2>
+    <p class="section-sub">Choose your preferred deployment method and follow the instructions.</p>
+
+    <div class="accordion-item" data-item>
+      <div class="accordion-head" data-toggle>
+        <div class="title">🖥️ Panel Deployment<span style="color:var(--muted); font-weight:400; font-size:.78rem; margin-left:8px;">Deploy using a hosting panel</span></div>
+        <span class="chev">⌄</span>
+      </div>
+      <div class="accordion-body">
+        <ol>
+          <li>Create a new Node.js server on your panel (Pterodactyl, etc.) and open its file manager.</li>
+          <li>Create a new file named <code class="inline">index.js</code> and paste the code below into it.</li>
+          <li>Edit the <code class="inline">config</code> values at the top — paste in your SESSION_ID from above.</li>
+          <li>Set the Startup Command to <code class="inline">node index.js</code>, then Start the server.</li>
+        </ol>
+        <div class="code-block"><pre id="loaderCode1">loading...</pre></div>
+        <button class="code-copy-btn" data-copy-target="loaderCode1">Copy loader code</button>
+      </div>
+    </div>
+
+    <div class="accordion-item" data-item>
+      <div class="accordion-head" data-toggle>
+        <div class="title">☁️ Render Deployment<span style="color:var(--muted); font-weight:400; font-size:.78rem; margin-left:8px;">Deploy on Render</span></div>
+        <span class="chev">⌄</span>
+      </div>
+      <div class="accordion-body">
+        <ol>
+          <li>Create a new empty GitHub repo with just two files: <code class="inline">package.json</code> (with <code class="inline">"start": "node index.js"</code>) and <code class="inline">index.js</code> — paste the code below into that <code class="inline">index.js</code>.</li>
+          <li>Edit the <code class="inline">config</code> values at the top, same as the Panel method.</li>
+          <li>On Render, create a new Web Service from that repo. Build Command: <code class="inline">npm install</code>. Start Command: <code class="inline">npm start</code>.</li>
+          <li>Deploy — it'll clone the real bot and start automatically.</li>
+        </ol>
+        <div class="code-block"><pre id="loaderCode2">loading...</pre></div>
+        <button class="code-copy-btn" data-copy-target="loaderCode2">Copy loader code</button>
+      </div>
+    </div>
+
+    <div class="accordion-item" data-item>
+      <div class="accordion-head" data-toggle>
+        <div class="title">🗄️ VPS Deployment<span style="color:var(--muted); font-weight:400; font-size:.78rem; margin-left:8px;">Deploy on your own VPS</span></div>
+        <span class="chev">⌄</span>
+      </div>
+      <div class="accordion-body">
+        <ol>
+          <li>SSH into your VPS, make a folder, and run <code class="inline">npm init -y</code> inside it.</li>
+          <li>Create <code class="inline">index.js</code> with <code class="inline">nano index.js</code>, paste the code below, edit the config, save.</li>
+          <li>Run <code class="inline">node index.js</code>. Use <code class="inline">pm2 start index.js</code> instead if you want it to keep running after you disconnect.</li>
+        </ol>
+        <div class="code-block"><pre id="loaderCode3">loading...</pre></div>
+        <button class="code-copy-btn" data-copy-target="loaderCode3">Copy loader code</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 2026 LËGĒNDÃRY LAB™</footer>
+
+<script>
+// ---- nav scroll ----
+document.querySelectorAll('nav a[data-scroll]').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById(a.dataset.scroll).scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// ---- tabs ----
+const numberTabBtn = document.getElementById('numberTabBtn');
+const qrTabBtn = document.getElementById('qrTabBtn');
+const numberPane = document.getElementById('numberPane');
+const qrPane = document.getElementById('qrPane');
+function showTab(tab) {
+  const isNumber = tab === 'number';
+  numberTabBtn.classList.toggle('active', isNumber);
+  qrTabBtn.classList.toggle('active', !isNumber);
+  numberPane.classList.toggle('active', isNumber);
+  qrPane.classList.toggle('active', !isNumber);
+}
+numberTabBtn.addEventListener('click', () => showTab('number'));
+qrTabBtn.addEventListener('click', () => showTab('qr'));
+
+function showSession(sessionId) {
+  document.getElementById('sessionBox').style.display = 'block';
+  document.getElementById('sessionValue').value = sessionId;
+}
+document.getElementById('copyCodeBtn').addEventListener('click', () => {
+  navigator.clipboard.writeText(document.getElementById('codeValue').textContent.replace(/[^A-Za-z0-9]/g, ''));
+  const b = document.getElementById('copyCodeBtn');
+  b.textContent = 'Copied!';
+  setTimeout(() => { b.textContent = 'Copy code'; }, 1500);
+});
+document.getElementById('copyBtn').addEventListener('click', () => {
+  const ta = document.getElementById('sessionValue');
+  ta.select();
+  navigator.clipboard.writeText(ta.value);
+  document.getElementById('copyBtn').textContent = 'Copied!';
+  setTimeout(() => { document.getElementById('copyBtn').textContent = 'Copy SESSION_ID'; }, 1500);
+});
+
+// ---- number/code pairing ----
+const pairBtn = document.getElementById('pairBtn');
+const numberInput = document.getElementById('numberInput');
+const errorMsg = document.getElementById('errorMsg');
+const codeBox = document.getElementById('codeBox');
+const codeValue = document.getElementById('codeValue');
+const statusDot = document.getElementById('statusDot');
+const statusText = document.getElementById('statusText');
+
+async function requestCode() {
+  errorMsg.style.display = 'none';
+  pairBtn.disabled = true;
+  pairBtn.textContent = 'Requesting...';
+  try {
+    const res = await fetch('/pair', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ number: numberInput.value })
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || 'Could not get a pairing code.');
+    codeValue.textContent = data.code;
+    codeBox.style.display = 'block';
+    pollStatus(data.requestId, '/status/', statusDot, statusText);
+  } catch (e) {
+    errorMsg.textContent = e.message;
+    errorMsg.style.display = 'block';
+  } finally {
+    pairBtn.disabled = false;
+    pairBtn.textContent = 'Get pairing code';
+  }
+}
+pairBtn.addEventListener('click', requestCode);
+
+function pollStatus(requestId, base, dotEl, textEl) {
+  const timer = setInterval(async () => {
+    try {
+      const res = await fetch(`${base}${requestId}`);
+      const data = await res.json();
+      if (data.status === 'connected') {
+        clearInterval(timer);
+        dotEl.className = 'dot live';
+        textEl.textContent = 'connected!';
+        showSession(data.sessionId);
+      } else if (data.status === 'error') {
+        clearInterval(timer);
+        textEl.textContent = data.error || 'Something went wrong — try again.';
+      }
+    } catch {}
+  }, 3000);
+}
+
+// ---- QR pairing ----
+const qrBtn = document.getElementById('qrBtn');
+const qrErrorMsg = document.getElementById('qrErrorMsg');
+const qrBox = document.getElementById('qrBox');
+const qrImage = document.getElementById('qrImage');
+const qrStatusDot = document.getElementById('qrStatusDot');
+const qrStatusText = document.getElementById('qrStatusText');
+
+async function requestQr() {
+  qrErrorMsg.style.display = 'none';
+  qrBtn.disabled = true;
+  qrBtn.textContent = 'Loading QR...';
+  try {
+    const res = await fetch('/qr');
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || 'Could not generate a QR code.');
+    qrImage.src = data.qr;
+    qrBox.style.display = 'block';
+    pollStatus(data.requestId, '/qr/status/', qrStatusDot, qrStatusText);
+  } catch (e) {
+    qrErrorMsg.textContent = e.message;
+    qrErrorMsg.style.display = 'block';
+  } finally {
+    qrBtn.disabled = false;
+    qrBtn.textContent = 'Get QR code';
+  }
+}
+qrBtn.addEventListener('click', requestQr);
+
+// ---- accordion ----
+document.querySelectorAll('[data-toggle]').forEach(head => {
+  head.addEventListener('click', () => {
+    head.closest('[data-item]').classList.toggle('open');
+  });
+});
+
+// ---- load loader.js source once, fill all 3 code blocks ----
+fetch('/loader-template.js').then(r => r.text()).then(text => {
+  ['loaderCode1', 'loaderCode2', 'loaderCode3'].forEach(id => {
+    document.getElementById(id).textContent = text;
+  });
+});
+document.querySelectorAll('[data-copy-target]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const text = document.getElementById(btn.dataset.copyTarget).textContent;
+    navigator.clipboard.writeText(text);
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = original; }, 1500);
+  });
+});
+</script>
+</body>
+</html>
