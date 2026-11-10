@@ -1,13 +1,13 @@
 {
   "name": "legendary-bot-v2",
   "version": "1.0.0",
-  "description": "LËGĒNDÃRY BØT — fresh rebuild, session-ID based, 20 starter commands",
+  "description": "LËGĒNDÃRY BØT — fresh rebuild, session-ID based",
   "main": "start.js",
   "scripts": {
     "start": "node start.js"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.7.9",
+    "baileys": "^7.0.0-rc14",
     "pino": "^9.3.2",
     "chalk": "^4.1.2",
     "sharp": "^0.33.4",
