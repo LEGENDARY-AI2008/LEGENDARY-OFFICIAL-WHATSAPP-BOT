@@ -1,0 +1,21 @@
+# Render blueprint: one web service that runs start.js.
+# - No SESSION_ID yet  -> it serves the pairing site, so the user pairs WhatsApp here.
+# - SESSION_ID is set  -> it runs the bot.
+services:
+  - type: web
+    name: legendary-bot
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: SESSION_ID
+        sync: false
+      - key: BOT_NAME
+        value: LËGĒNDÃRY BØT
+      - key: PREFIX
+        value: .
+      - key: TIMEZONE
+        value: Africa/Lagos
